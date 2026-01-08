@@ -15,7 +15,7 @@ export async function login(req, res) {
 
   const token = jwt.sign({ userId: user.id }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-  return res.json({ token });
+  return res.json({ token, "UserId": user.id });
 }
 
 export async function refresh(req, res) {

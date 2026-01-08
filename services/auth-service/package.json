@@ -10,7 +10,7 @@
     "dev": "nodemon src/index.js",
     "start": "node src/index.js"
   },
-   "dependencies": {
+  "dependencies": {
     "@opentelemetry/auto-instrumentations-node": "^0.67.3",
     "@opentelemetry/sdk-node": "^0.208.0",
     "bcryptjs": "^2.4.3",

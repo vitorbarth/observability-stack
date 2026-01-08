@@ -1,171 +1,243 @@
 {
-  "info": {
-    "name": "Observability Stack",
-    "_postman_id": "c9251a34-8852-47b2-aa31-9c8b79c3b530",
-    "description": "Coleção para testar os microsserviços Auth, Account e Transaction.",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
-  },
-  "item": [
-    {
-      "name": "AUTH – Login",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" }
-        ],
-        "url": {
-          "raw": "{{base_url}}/auth/login",
-          "host": ["{{base_url}}"],
-          "path": ["auth", "login"]
-        },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"username\": \"user1\",\n  \"password\": \"123456\"\n}"
-        }
-      },
-      "response": [],
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Login retornou 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});",
-              "",
-              "let json = pm.response.json();",
-              "pm.environment.set(\"token\", json.token);",
-              "console.log(\"Token salvo:\", json.token);"
-            ],
-            "type": "text/javascript"
-          }
-        }
-      ]
-    },
-    {
-      "name": "ACCOUNT – Criar Conta",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": {
-          "raw": "{{base_url}}/account/create",
-          "host": ["{{base_url}}"],
-          "path": ["account", "create"]
-        },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"owner\": \"User Test\",\n  \"type\": \"checking\"\n}"
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Conta criada com sucesso\", function () {",
-              "    pm.response.to.have.status(201);",
-              "});",
-              "",
-              "let account = pm.response.json();",
-              "pm.environment.set(\"account_id\", account.id);"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "ACCOUNT – Consultar Conta",
-      "request": {
-        "method": "GET",
-        "header": [
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": {
-          "raw": "{{base_url}}/account/{{account_id}}",
-          "host": ["{{base_url}}"],
-          "path": ["account", "{{account_id}}"]
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Consulta conta retornou 200\", function () {",
-              "    pm.response.to.have.status(200);",
-              "});"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "TRANSACTION – Depositar",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": {
-          "raw": "{{base_url}}/transaction/deposit",
-          "host": ["{{base_url}}"],
-          "path": ["transaction", "deposit"]
-        },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"accountId\": \"{{account_id}}\",\n  \"amount\": 150\n}"
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Depósito OK\", function () {",
-              "    pm.response.to.have.status(201);",
-              "});"
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "name": "TRANSACTION – Transferência",
-      "request": {
-        "method": "POST",
-        "header": [
-          { "key": "Content-Type", "value": "application/json" },
-          { "key": "Authorization", "value": "Bearer {{token}}" }
-        ],
-        "url": {
-          "raw": "{{base_url}}/transaction/transfer",
-          "host": ["{{base_url}}"],
-          "path": ["transaction", "transfer"]
-        },
-        "body": {
-          "mode": "raw",
-          "raw": "{\n  \"from\": \"{{account_id}}\",\n  \"to\": \"2\",\n  \"amount\": 50\n}"
-        }
-      },
-      "event": [
-        {
-          "listen": "test",
-          "script": {
-            "exec": [
-              "pm.test(\"Transferência retornou 201\", function () {",
-              "    pm.response.to.have.status(201);",
-              "});"
-            ]
-          }
-        }
-      ]
-    }
-  ],
-  "variable": [
-    { "key": "base_url", "value": "http://localhost:3001" }
-  ]
+	"info": {
+		"_postman_id": "ed9e6293-3dc4-46d3-b37c-7cec21a6150a",
+		"name": "Observability Stack",
+		"description": "Coleção para testar os microsserviços Auth, Account e Transaction.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "591269"
+	},
+	"item": [
+		{
+			"name": "AUTH – Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Login retornou 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let json = pm.response.json();",
+							"pm.environment.set(\"token\", json.token);",
+							"pm.environment.set(\"user-id\", json.UserId);",
+							"console.log(\"Token salvo:\", json.token);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"email\": \"alice@example.com\",\n  \"password\": \"123456\"\n}"
+				},
+				"url": {
+					"raw": "{{url-auth}}/login",
+					"host": [
+						"{{url-auth}}"
+					],
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ACCOUNT – Consultar Saldo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Consulta conta retornou 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"let json = pm.response.json();",
+							"pm.environment.set(\"account_id\", json.id);",
+							"console.log(\"Token salvo:\", json.token);"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"url": {
+					"raw": "{{url-account}}/accounts/{{user-id}}/balance",
+					"host": [
+						"{{url-account}}"
+					],
+					"path": [
+						"accounts",
+						"{{user-id}}",
+						"balance"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TRANSACTION – Depositar",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Depósito OK\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"accountId\": \"{{account_id}}\",\n  \"amount\": 150\n}"
+				},
+				"url": {
+					"raw": "{{url-transaction}}/transactions/deposit",
+					"host": [
+						"{{url-transaction}}"
+					],
+					"path": [
+						"transactions",
+						"deposit"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TRANSACTION – Transferência",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Transferência retornou 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {},
+						"requests": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "Authorization",
+						"value": "Bearer {{token}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"fromAccount\": \"{{account_id}}\",\n  \"toAccount\": \"2\",\n  \"amount\": 50\n}"
+				},
+				"url": {
+					"raw": "{{url-transaction}}/transactions/transfer",
+					"host": [
+						"{{url-transaction}}"
+					],
+					"path": [
+						"transactions",
+						"transfer"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"requests": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "url-auth",
+			"value": ""
+		},
+		{
+			"key": "url-account",
+			"value": ""
+		},
+		{
+			"key": "url-transaction",
+			"value": ""
+		},
+		{
+			"key": "token",
+			"value": ""
+		},
+		{
+			"key": "user-id",
+			"value": ""
+		},
+		{
+			"key": "account_id",
+			"value": "",
+			"type": "default"
+		}
+	]
 }
