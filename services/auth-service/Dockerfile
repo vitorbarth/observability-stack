@@ -1,15 +1,12 @@
-FROM golang:1.25 AS build
+FROM node:20
 
 WORKDIR /app
 
+COPY package*.json ./
+RUN npm install
+
 COPY . .
-RUN go mod download
-RUN go build -o auth-service ./cmd/server
 
-FROM gcr.io/distroless/base-debian12
+EXPOSE 3001
 
-COPY --from=build /app/auth-service /usr/local/bin/auth-service
-
-EXPOSE 8080
-
-ENTRYPOINT ["auth-service"]
+CMD ["npm", "start"]
