@@ -1,4 +1,5 @@
 import { db } from "../database.js";
+import AccountClient from "../clients/accountClient.js";
 
 // Helper – registra histórico
 async function insertTransaction(accountId, type, amount) {
@@ -54,12 +55,10 @@ export async function withdraw(req, res) {
   try {
     await db.query("BEGIN");
 
-    const result = await db.query(
-      "SELECT balance FROM accounts WHERE id = $1",
-      [accountId]
-    );
+    const accountClient = new AccountClient();
 
-    if (result.rows[0].balance < amount) {
+    const balance = await accountClient.getBalance(accountId);
+    if (balance < amount) {
       await db.query("ROLLBACK");
       return res.status(400).json({ error: "Insufficient funds" });
     }
@@ -95,12 +94,10 @@ export async function transfer(req, res) {
     await db.query("BEGIN");
 
     // saldo origem
-    const result = await db.query(
-      "SELECT balance FROM accounts WHERE id = $1",
-      [fromAccount]
-    );
+    const accountClient = new AccountClient();
+    const balance = await accountClient.getBalance(fromAccount);
 
-    if (result.rows[0].balance < amount) {
+    if (balance < amount) {
       await db.query("ROLLBACK");
       return res.status(400).json({ error: "Insufficient funds" });
     }
